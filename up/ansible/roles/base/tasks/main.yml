@@ -1,0 +1,62 @@
+---
+
+- name: Exit if target is not Ubuntu 22.04
+  meta: end_play
+  when: ansible_distribution_release not in ["jammy"]
+
+
+- name: Add Deadsnakes Nightly APT repository
+  apt_repository:
+    repo: ppa:deadsnakes/ppa
+
+
+- apt: update_cache=yes
+- apt: upgrade=dist
+
+
+- name: Install base packages
+  apt:
+    name:
+      - build-essential
+      - "{{ python_version }}"
+      - "{{ python_version }}-dev"
+      - "{{ python_version }}-distutils"
+      - "{{ python_version }}-venv"
+      - virtualenvwrapper
+      - libpq-dev
+      - libjpeg-dev
+      - zlib1g-dev
+    state: latest
+
+
+- name: Add app user group
+  group:
+    name: "{{ app_name }}"
+    system: yes
+    state: present
+
+
+- name: Add app user
+  user:
+    name: "{{ app_name }}"
+    groups:
+      - "{{ app_name }}"
+    state: present
+    append: yes
+    shell: /bin/bash
+
+
+- name: Install acme.sh
+  shell: curl https://get.acme.sh | sh -s email={{ certbot_email }}
+
+
+- name: Make directories for application
+  file: path={{ item }} state=directory owner={{ app_name }} group=staff
+  with_items:
+    - /srv/www/{{ app_name }}
+    - /srv/www/{{ app_name }}/logs
+    - /srv/www/{{ app_name }}/static
+    - /srv/www/{{ app_name }}/media
+    - /srv/www/{{ app_path }}
+    - /srv/www/{{ app_path }}/code
+    - /srv/www/{{ app_path }}/logs

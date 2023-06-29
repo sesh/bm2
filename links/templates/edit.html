@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+    <h2>Edit Bookmark</h2>
+    <form class="form" method="post">
+        {{ form.render }}
+        {% csrf_token %}
+        <input class="btn" type="submit" value="Update Bookmark" />
+    </form>
+</section>
+{% endblock %}

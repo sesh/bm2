@@ -1,0 +1,7 @@
+---
+
+- name: Restart app
+  service:
+    name: "{{ service_name }}"
+    state: restarted
+    enabled: yes

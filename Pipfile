@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+pyyaml = "*"
+dj-database-url = "*"
+django-taggit = "*"
+thttp = "*"
+
+[dev-packages]
+black = "*"
+isort = "*"
+coverage = "*"
+
+[requires]
+python_version = "3.11"

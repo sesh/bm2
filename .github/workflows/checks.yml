@@ -1,0 +1,136 @@
+name: Python Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  django-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Create .env
+      run: |
+        echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" > .env
+        cat .env
+      env:
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY_TEST }}
+
+    - name: Run Tests
+      run: |
+        python manage.py test
+      env:
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY_TEST }}
+
+  black:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install black
+        run: |
+          python -m pip install black
+
+      - name: Run black
+        run: |
+          black --check .
+
+  isort:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install isort
+        run: |
+          python -m pip install isort
+
+      - name: Run isort
+        run: |
+          isort --check .
+
+  ruff:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        run: |
+          python -m pip install ruff
+
+      - name: Run ruff
+        run: |
+          ruff --format=github .
+
+  bandit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3
+
+      - name: Install bandit
+        run: |
+          python -m pip install bandit[toml]
+
+      - name: Run bandit scan
+        run: |
+          bandit -c pyproject.toml -r .
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install coverage.py
+        run: |
+          pip install coverage[toml]
+
+      - name: Test with unittest
+        run: |
+          coverage run -m python manage.py test
+          coverage report -m --fail-under=80

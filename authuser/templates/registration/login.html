@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <title>Login</title>
+</head>
+<body>
+    <!-- Look and feel heavily inspired by Hacker News' login screen :D -->
+    <h3>Login</h3>
+    <form method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="Login" />
+    </form>
+</body>
+</html>

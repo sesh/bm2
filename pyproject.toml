@@ -1,0 +1,14 @@
+[tool.ruff]
+line-length = 120
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.bandit]
+exclude_dirs = ["up"]
+
+[tool.coverage.report]
+omit = ["bm2/settings.py", "authuser/**", "up/**"]

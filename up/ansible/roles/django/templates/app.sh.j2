@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+LOGFILE=/srv/www/{{ app_name }}/logs/{{ app_path }}.log
+LOGDIR=$(dirname $LOGFILE)
+NUM_WORKERS={{ gunicorn_workers }}
+
+# user/group to run as
+USER={{ app_name }}
+GROUP={{ app_name }}
+
+{% for variable_name, value in env.items() %}
+export {{ variable_name }}="{{ value }}"
+{% endfor %}
+
+cd /srv/www/{{ app_path }}/code
+source /srv/www/{{ app_path }}/venv/bin/activate
+
+test -d $LOGDIR || mkdir -p $LOGDIR
+
+exec gunicorn {{ app_name }}.wsgi:application -w $NUM_WORKERS \
+  --timeout=300 --user=$USER --group=$GROUP --log-level=debug \
+  -b [::]:{{ gunicorn_port }} --log-file=$LOGFILE 2>> $LOGFILE

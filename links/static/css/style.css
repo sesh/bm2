@@ -1,0 +1,127 @@
+header, section {
+  width: 90em;
+  max-width: 96%;
+  margin: 2em auto;
+}
+
+.links {
+  display: flex;
+}
+
+.links div {
+  width: 100%;
+}
+
+.links .sidebar {
+  flex: 0 0 320px;
+  margin-left: 2em;
+}
+
+@media (max-width:900px) {
+  .links {
+    flex-direction:column;
+  }
+
+  .links .sidebar {
+    margin: 2em 0 0 0;
+  }
+}
+
+.link {
+  display: flex;
+  margin-bottom: 2em;
+}
+
+.link .title {
+  display: block;
+  margin-bottom: 0.2em;
+}
+
+.link p {
+  margin: 0;
+  margin-bottom: 0.5em;
+}
+
+.link img, .link .img-wrapper {
+    margin: 0;
+    padding: 0;
+
+    flex: 0 0 24px;
+
+    width: 24px;
+    height: 24px;
+    margin-right: 0.5rem;
+
+    overflow: hidden;
+}
+
+.link ul, .all-tags {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.link ul li, .all-tags li {
+    padding: 0 0.5rem 0 0;
+    display: inline-block;
+}
+
+.delete p:first-of-type {
+    margin-bottom: 1rem;
+}
+
+.sidebar .form input {
+    margin-top: 0;
+}
+
+ul.all-tags {
+    margin-top: 1em;
+}
+
+/* Tiny Grid */
+
+.grid {
+    display: flex;
+    justify-content: space-between;
+}
+
+/*
+Django Messages formatting
+*/
+
+.messages {
+    list-style: none;
+    margin: 1em 0 2em;
+    padding: 0;
+    width: 100%;
+}
+
+.messages li {
+    background-color: #ffec99;
+    padding: 12px;
+    width: 100%;
+    line-height: 2.0em;
+}
+
+.messages li.info {
+    background-color: #d0ebff;
+}
+
+.messages li.warning {
+  background-color: #ffec99;
+}
+
+.messages li.error {
+    background-color: #ffe3e3;
+}
+
+/* Django Forms */
+
+.form [type="email"], .form [type="number"], .form [type="password"], .form [type="search"], .form [type="tel"], .form [type="text"], .form [type="url"], .form select, .form textarea {
+  display: inline;
+  margin-top: 0;
+}
+
+.helptext {
+  display: block;
+}

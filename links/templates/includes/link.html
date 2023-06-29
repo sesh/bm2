@@ -1,0 +1,19 @@
+<div class="link">
+    <div class="img-wrapper">
+        <img src="{{ link.icon }}" alt="{{ link.title }}">
+    </div>
+
+    <div>
+        <a class="title" href="{{ link.url }}">{% if link.title %}{{ link.title }}{% else %}[missing title]{% endif %}</a>
+        {% if link.note %}<p>{{ link.note }}</p>{% endif %}
+
+        <ul class="tags text-small">
+            <li><a class="text-muted" href="/?date={{ link.added|date:"Y-m-d" }}">#{{ link.added|date:"Y-m-d" }}</a></li>
+            <li><a class="text-muted" href="/?domain={{ link.domain }}">#{{ link.domain }}</a></li>
+            {% for t in link.tags.all %}
+            <li><a class="text-muted" href="/?tag={{ t.slug }}">#{{ t.name }}</a></li>
+            {% endfor %}
+            <li>[<a href="{% url 'edit-link' pk=link.pk %}">edit</a>]</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="links">
+    <div>
+        {% if not links %}
+        <p>No bookmarks yet!</p>
+        {% else %}
+
+        {% for link in links %}
+        {% include 'includes/link.html' with link=link %}
+        {% endfor %}
+        {% endif %}
+
+        {% if next or prev %}
+        <div class="grid">
+            <div>
+                {% if prev %}<a href="{{ prev }}">{% endif %}
+                newer{% if prev %}</a>{% endif %}
+            </div>
+
+            <div class="text-right">
+                {% if next %}<a href="{{ next }}">{% endif %}
+                older{% if next %}</a>{% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if user %}
+        <p>
+            Logged in as <strong>{{ user }}</strong>
+        </p>
+        {% endif %}
+    </div>
+
+    <div class="sidebar">
+        {% include 'includes/sidebar.html' %}
+    </div>
+</section>
+{% endblock %}
+
+

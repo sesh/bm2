@@ -1,0 +1,33 @@
+<form class="form">
+    <input type="text" placeholder="Search..." name="q">
+</form>
+
+<p class="text-small">
+    <a href="/">Show all</a> | <a href="/add/">Add bookmark</a> | <a href="/settings/">Settings</a>
+</p>
+
+<p  class="text-small">
+    {% comment %}
+    <!--
+        let base = "https://bm2.brntn.me/add/";
+        let title = document.title;
+        let url = window.location.href;
+        window.open(base + "?url=" + url + "&title=" + title, "Add Bookmark", "width=500,height=800");
+    -->
+    {% endcomment %}
+    Bookmarklet: <a href="javascript:void%20function(){base=%22https://bm2.brntn.me/add/%22,title=document.title,url=window.location.href,window.open(base+%22%3Furl=%22+url+%22%26title=%22+title,%22Add%20Bookmark%22,%22width=500,height=800%22)}();">bm2</a>
+</p>
+
+<form method="post" action="/import/github/">
+    {% csrf_token %}
+    <p>
+        <input class="btn" type="submit" value="Import Github Stars" />
+    </p>
+</form>
+
+<form method="post" action="/import/feedbin/">
+    {% csrf_token %}
+    <p>
+        <input class="btn" type="submit" value="Import Feedbin Starred" />
+    </p>
+</form>

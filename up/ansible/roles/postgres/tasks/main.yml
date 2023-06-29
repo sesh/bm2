@@ -1,0 +1,53 @@
+---
+
+- apt: update_cache=yes
+
+
+- name: Install postgresql
+  apt:
+    pkg:
+      - postgresql
+      - postgresql-client
+      - python3-psycopg2
+
+
+- name: Ensure postgres is running
+  service:
+    name: postgresql
+    state: started
+
+
+- name: Create our database
+  postgresql_db:
+    name: "{{ app_name }}"
+    encoding: "Unicode"
+    template: "template0"
+  become: yes
+  become_user: postgres
+
+
+- name: Check if there is a previous DB password saved
+  shell: "cat /srv/www/{{ app_name }}/.dbpass"
+  ignore_errors: yes
+  register: dot_dbpass
+
+
+- name: Replace the random DB password with the one from the .dbpass file
+  set_fact:
+    db_password: "{{ dot_dbpass.stdout }}"
+  when: dot_dbpass.stdout != ""
+
+
+- name: Create the database user for this app
+  postgresql_user:
+    name: "{{ app_name }}"
+    db: "{{ app_name }}"
+    password: "{{ db_password }}"
+  become: yes
+  become_user: postgres
+
+
+- name: Save the db password for next time
+  copy:
+    content: "{{ db_password }}"
+    dest: "/srv/www/{{ app_name }}/.dbpass"
