@@ -23,18 +23,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Create .env
+    - name: Install coverage.py
       run: |
-        echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" > .env
-        cat .env
-      env:
-        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY_TEST }}
+        pip install coverage[toml]
 
     - name: Run Tests
       run: |
-        python manage.py test
+        coverage run manage.py test
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY_TEST }}
+
+    - name: Fail if coverage below threshold
+      run: |
+        coverage report -m --fail-under=80
 
   black:
     runs-on: ubuntu-latest
@@ -111,26 +112,3 @@ jobs:
       - name: Run bandit scan
         run: |
           bandit -c pyproject.toml -r .
-
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install test dependencies
-        run: |
-          pip install -r requirements.txt
-
-      - name: Install coverage.py
-        run: |
-          pip install coverage[toml]
-
-      - name: Test with unittest
-        run: |
-          coverage run -m python manage.py test
-          coverage report -m --fail-under=80
