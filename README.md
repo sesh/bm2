@@ -31,6 +31,7 @@ Notes:
 
 - Ansible must be installed on your local machine
 - Target should be running Ubuntu 22.04
+- The domain that you are deploying to must be in `ALLOWED_HOSTS`
 
 ```bash
 pipenv run python manage.py up bm2.brntn.me --email=<your-email>
@@ -38,7 +39,7 @@ pipenv run python manage.py up bm2.brntn.me --email=<your-email>
 
 ### Checks
 
-A [pre-commit](https://pre-commit.org) configuration is available that runs the same checks as the Github Actions pipeline.
+A [pre-commit](https://pre-commit.com) configuration is available that runs the same checks as the Github Actions pipeline.
 
 ```
 pre-commit install
