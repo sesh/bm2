@@ -38,12 +38,16 @@ pipenv run python manage.py up bm2.brntn.me --email=<your-email>
 
 ### Checks
 
-```
-bandit -c pyproject.toml -r .
-```
+A [pre-commit](https://pre-commit.org) configuration is available that runs the same checks as the Github Actions pipeline.
 
 ```
-black .
+pre-commit install
+```
+
+There checks can be manually run with:
+
+```
+pre-commit run --all-files
 ```
 
 ---
