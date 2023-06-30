@@ -32,3 +32,10 @@
         <input class="btn" type="submit" value="Import Feedbin Starred" />
     </p>
 </form>
+
+<form method="post" action="/import/hackernews/">
+    {% csrf_token %}
+    <p>
+        <input class="btn" type="submit" value="Import HN Favourites" />
+    </p>
+</form>

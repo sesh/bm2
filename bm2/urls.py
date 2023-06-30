@@ -24,6 +24,7 @@ from links.views import (
     edit,
     import_feedbin,
     import_github,
+    import_hackernews,
     user_settings,
 )
 
@@ -47,6 +48,7 @@ urlpatterns = [
     # importers
     path("import/github/", import_github, name="github-import"),
     path("import/feedbin/", import_feedbin, name="feedbin-import"),
+    path("import/hackernews/", import_hackernews, name="hackernews-import"),
     # .well-known
     path("robots.txt", robots),
     path(".well-known/security.txt", security),

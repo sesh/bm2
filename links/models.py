@@ -57,3 +57,5 @@ class UserSettings(models.Model):
     )
 
     feedbin_password = models.CharField(max_length=300, blank=True, help_text="Your feedbin password")
+
+    hn_username = models.CharField(max_length=40, blank=True, help_text="Your Hacker News username")

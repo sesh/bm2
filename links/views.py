@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from links.forms import LinkForm, UserSettingsForm
-from links.importers import MissingCredentialException, feedbin, github
+from links.importers import MissingCredentialException, feedbin, github, hackernews
 from links.models import Link, UserSettings
 
 
@@ -156,7 +156,7 @@ def import_github(request):
             messages.warning(request, "Please add your Github token in settings")
             return redirect("/")
 
-        if count > 0:
+        if count >= 0:
             messages.info(request, f"Imported {count} stars from Github")
 
     return redirect("/")
@@ -171,7 +171,22 @@ def import_feedbin(request):
             messages.warning(request, "Please add your Feedbin credentials in settings")
             return redirect("/")
 
-        if count > 0:
+        if count >= 0:
             messages.info(request, f"Imported {count} starred entries from Feedbin")
+
+    return redirect("/")
+
+
+@login_required
+def import_hackernews(request):
+    if request.method == "POST":
+        try:
+            count = hackernews.import_favourites(request.user, request)
+        except (UserSettings.DoesNotExist, MissingCredentialException):
+            messages.warning(request, "Please add your Hacker News username in settings")
+            return redirect("/")
+
+        if count >= 0:
+            messages.info(request, f"Imported {count} favourites from Hacker News")
 
     return redirect("/")

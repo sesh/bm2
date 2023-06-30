@@ -24,6 +24,8 @@ class UserSettingsForm(forms.ModelForm):
         required=False,
     )
 
+    hn_username = forms.CharField(label="HN username", strip=True, required=False)
+
     class Meta:
         model = UserSettings
-        fields = ["github_pat", "feedbin_username", "feedbin_password"]
+        fields = ["github_pat", "feedbin_username", "feedbin_password", "hn_username"]

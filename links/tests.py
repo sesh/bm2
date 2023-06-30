@@ -248,7 +248,7 @@ class ImporterTestCase(TestCase):
         self.client.force_login(self.user)
 
     def test_imports_fail_with_missing_settings(self):
-        for url in ["/import/github/", "/import/feedbin/"]:
+        for url in ["/import/github/", "/import/feedbin/", "/import/hackernews/"]:
             response = self.client.post(url, follow=True)
             messages = list(response.context["messages"])
             self.assertTrue("in settings" in messages[0].message)
@@ -256,7 +256,7 @@ class ImporterTestCase(TestCase):
     def test_imports_fail_with_missing_credential(self):
         UserSettings.objects.create(user=self.user)
 
-        for url in ["/import/github/", "/import/feedbin/"]:
+        for url in ["/import/github/", "/import/feedbin/", "/import/hackernews/"]:
             response = self.client.post(url, follow=True)
             messages = list(response.context["messages"])
             self.assertTrue("in settings" in messages[0].message)
@@ -350,6 +350,18 @@ class ImporterTestCase(TestCase):
                 "Unde culpa inventore ipsam et. Unde ipsam sed assumenda officiis.",
                 Link.objects.filter(user=self.user)[1].title,
             )
+
+    def test_import_hackernews_favoutires(self):
+        UserSettings.objects.create(user=self.user, hn_username="brntn")
+
+        mocked_response = Response(
+            None, None, {"links": [{"url": "https://example.org", "title": "ICAAN Example Site"}]}, 200, None, {}, None
+        )
+
+        with mock.patch("links.importers.hackernews.thttp.request", side_effect=[mocked_response]):
+            self.client.post("/import/hackernews/")
+            self.assertEqual(1, Link.objects.filter(user=self.user).count())
+            self.assertEqual("ICAAN Example Site", Link.objects.filter(user=self.user)[0].title)
 
 
 class WellKnownTestCase(TestCase):
