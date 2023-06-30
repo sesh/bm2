@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from links.forms import LinkForm, UserSettingsForm
-from links.importers import feedbin, github
+from links.importers import MissingCredentialException, feedbin, github
 from links.models import Link, UserSettings
 
 
@@ -134,7 +134,11 @@ def settings(request):
 @login_required
 def import_github(request):
     if request.method == "POST":
-        count = github.import_stars(request.user, request)
+        try:
+            count = github.import_stars(request.user, request)
+        except (UserSettings.DoesNotExist, MissingCredentialException):
+            messages.warning(request, "Please add your Github token in settings")
+            return redirect("/")
 
         if count > 0:
             messages.info(request, f"Imported {count} stars from Github")
@@ -145,7 +149,11 @@ def import_github(request):
 @login_required
 def import_feedbin(request):
     if request.method == "POST":
-        count = feedbin.import_stars(request.user, request)
+        try:
+            count = feedbin.import_stars(request.user, request)
+        except (UserSettings.DoesNotExist, MissingCredentialException):
+            messages.warning(request, "Please add your Feedbin credentials in settings")
+            return redirect("/")
 
         if count > 0:
             messages.info(request, f"Imported {count} starred entries from Feedbin")

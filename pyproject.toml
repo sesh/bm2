@@ -11,4 +11,4 @@ profile = "black"
 exclude_dirs = ["up"]
 
 [tool.coverage.report]
-omit = ["bm2/settings.py", "authuser/**", "up/**"]
+omit = ["bm2/settings.py", "authuser/**", "up/**", "bm2/manage.py"]

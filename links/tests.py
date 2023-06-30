@@ -1,8 +1,10 @@
 import secrets
 from datetime import timedelta
+from unittest import mock
 
 from django.test import TestCase
 from django.utils import timezone
+from thttp import Response
 
 from authuser.models import User
 from links.models import Link, UserSettings
@@ -196,3 +198,123 @@ class SettingsTestCase(TestCase):
 
         user_settings = UserSettings.objects.get(user=self.user)
         self.assertEqual("AAA", user_settings.github_pat)
+
+
+class ImporterTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(email="tester@example.org")
+        self.client.force_login(self.user)
+
+    def test_imports_fail_with_missing_settings(self):
+        for url in ["/import/github/", "/import/feedbin/"]:
+            response = self.client.post(url, follow=True)
+            messages = list(response.context["messages"])
+            self.assertTrue("in settings" in messages[0].message)
+
+    def test_imports_fail_with_missing_credential(self):
+        UserSettings.objects.create(user=self.user)
+
+        for url in ["/import/github/", "/import/feedbin/"]:
+            response = self.client.post(url, follow=True)
+            messages = list(response.context["messages"])
+            self.assertTrue("in settings" in messages[0].message)
+
+    def test_import_github_stars(self):
+        UserSettings.objects.create(user=self.user, github_pat="AAA")
+
+        mocked_response = Response(
+            None,
+            None,
+            [
+                {
+                    "repo": {
+                        "html_url": "https://github.com/sesh/thttp",
+                        "full_name": "sesh/thttp",
+                        "description": "A tiny http library with a mocked response!",
+                        "topics": ["test", "http", "mocking"],
+                    },
+                    "starred_at": "2023-06-29T23:39:35Z",
+                }
+            ],
+            200,
+            None,
+            {},
+            None,
+        )
+
+        with mock.patch("links.importers.github.thttp.request", return_value=mocked_response):
+            self.client.post("/import/github/")
+            self.assertEqual(1, Link.objects.filter(user=self.user).count())
+            self.assertEqual("https://github.com/sesh/thttp", Link.objects.filter(user=self.user)[0].url)
+
+    def test_import_feedbin_entries(self):
+        UserSettings.objects.create(user=self.user, feedbin_username="aaa", feedbin_password="aaa")  # nosec
+
+        first_mocked_response = Response(None, None, ["123456"], 200, None, {}, None)
+        second_mocked_response = Response(
+            None,
+            None,
+            [{"url": "https://example.org", "title": "Official example", "created_at": "2023-06-29T23:39:35Z"}],
+            200,
+            None,
+            {},
+            None,
+        )
+
+        with mock.patch(
+            "links.importers.feedbin.thttp.request", side_effect=[first_mocked_response, second_mocked_response]
+        ):
+            self.client.post("/import/feedbin/")
+            self.assertEqual(1, Link.objects.filter(user=self.user).count())
+            self.assertEqual("https://example.org", Link.objects.filter(user=self.user)[0].url)
+
+    def test_import_feedbin_uses_summary_if_no_title(self):
+        UserSettings.objects.create(user=self.user, feedbin_username="aaa", feedbin_password="aaa")  # nosec
+
+        first_mocked_response = Response(None, None, ["123456"], 200, None, {}, None)
+        second_mocked_response = Response(
+            None,
+            None,
+            [
+                {
+                    "url": "https://example.net",
+                    "title": "",
+                    "summary": "This is a summary of the post",
+                    "created_at": "2023-06-29T23:39:35Z",
+                },
+                {
+                    "url": "https://example.org",
+                    "title": "",
+                    "summary": "Magni pariatur omnis ducimus atque tenetur. "
+                    "Unde culpa inventore ipsam et. Unde ipsam sed assumenda officiis. "
+                    "Asperiores qui aut consequuntur ullam sunt vero ea enim.",
+                    "created_at": "2023-06-29T23:39:35Z",
+                },
+            ],
+            200,
+            None,
+            {},
+            None,
+        )
+
+        with mock.patch(
+            "links.importers.feedbin.thttp.request", side_effect=[first_mocked_response, second_mocked_response]
+        ):
+            self.client.post("/import/feedbin/")
+            self.assertEqual(2, Link.objects.filter(user=self.user).count())
+            self.assertEqual("This is a summary of the post.", Link.objects.filter(user=self.user)[0].title)
+            self.assertEqual(
+                "Magni pariatur omnis ducimus atque tenetur. "
+                "Unde culpa inventore ipsam et. Unde ipsam sed assumenda officiis.",
+                Link.objects.filter(user=self.user)[1].title,
+            )
+
+
+class WellKnownTestCase(TestCase):
+    def test_robots(self):
+        response = self.client.get("/robots.txt")
+        self.assertEqual("text/plain; charset=UTF-8", response.headers["content-type"])
+
+    def test_security(self):
+        response = self.client.get("/.well-known/security.txt")
+        self.assertTrue("security@brntn.me" in response.content.decode())

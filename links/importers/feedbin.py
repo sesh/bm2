@@ -1,6 +1,6 @@
 import thttp
-from django.contrib import messages
 
+from links.importers import MissingCredentialException
 from links.models import Link, UserSettings
 
 
@@ -21,19 +21,12 @@ def import_stars(user, request=None):
     settings = UserSettings.objects.get(user=user)
 
     if not (settings.feedbin_username and settings.feedbin_password):
-        if request:
-            messages.warning(request, "Missing Feedbin credentials in settings")
-        return 0
+        raise MissingCredentialException()
 
     response = thttp.request(
         "https://api.feedbin.com/v2/starred_entries.json",
         basic_auth=(settings.feedbin_username, settings.feedbin_password),
     )
-
-    if response.status != 200:
-        if request:
-            messages.warning(request, f"Feedbin request failed with {response.status}")
-        return 0
 
     if len(response.json) > 0:
         entries = thttp.request(

@@ -1,5 +1,6 @@
 import thttp
 
+from links.importers import MissingCredentialException
 from links.models import Link, UserSettings
 
 
@@ -7,7 +8,7 @@ def import_stars(user, request=None):
     settings = UserSettings.objects.get(user=user)
 
     if not settings.github_pat:
-        return 0
+        raise MissingCredentialException()
 
     url = "https://api.github.com/user/starred"
     response = thttp.request(

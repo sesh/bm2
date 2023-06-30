@@ -14,7 +14,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path
 
@@ -27,13 +26,9 @@ def robots(request):
 
 def security(request):
     return HttpResponse(
-        "Contact: <your-email>\nExpires: 2025-01-01T00:00:00.000Z",
+        "Contact: security@brntn.me\nExpires: 2025-01-01T00:00:00.000Z",
         headers={"Content-Type": "text/plain; charset=UTF-8"},
     )
-
-
-def trigger_error(request):
-    pass
 
 
 urlpatterns = [
@@ -47,8 +42,6 @@ urlpatterns = [
     # .well-known
     path("robots.txt", robots),
     path(".well-known/security.txt", security),
-    path(".well-known/500", trigger_error),
-    path("admin/", admin.site.urls),
     # Django accounts
     path("accounts/", include("django.contrib.auth.urls")),
 ]
