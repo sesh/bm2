@@ -10,6 +10,20 @@ class LinkForm(forms.ModelForm):
 
 
 class UserSettingsForm(forms.ModelForm):
+    github_pat = forms.CharField(
+        label="Github Personal Access Token",
+        strip=False,
+        widget=forms.PasswordInput(render_value=True),
+        required=False,
+    )
+
+    feedbin_password = forms.CharField(
+        label="Feedbin password",
+        strip=False,
+        widget=forms.PasswordInput(render_value=True),
+        required=False,
+    )
+
     class Meta:
         model = UserSettings
         fields = ["github_pat", "feedbin_username", "feedbin_password"]
