@@ -7,7 +7,7 @@
 I generally use `pipenv` for Python/Django projects because it's familiar.
 You can adopt the usage instructions below to a different tool if that's more your jam.
 
-Getting this running locally is pretty straight forward:
+Getting this running locally is pretty straight forward.
 
 Install the dependencies:
 
