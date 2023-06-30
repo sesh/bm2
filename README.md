@@ -7,21 +7,41 @@
 I generally use `pipenv` for Python/Django projects because it's familiar.
 You can adopt the usage instructions below to a different tool if that's more your jam.
 
-### Running the initial migrations
+Getting this running locally is pretty straight forward:
 
-```bash
+Install the dependencies:
+
+```
+pipenv install
+```
+
+Generate a secure Django secret key and add it to `.env`:
+
+```
+echo "DJANGO_SECRET_KEY=<secret!>" > .env
+```
+
+Run the initial migrations to setup the database:
+
+```
 pipenv run python manage.py migrate
 ```
 
-### Running the development server
+There's currently no way to create an account through the web interface, so use the CLI to create a user:
 
-```bash
+```
+pipenv run python manage.py createsuperuser
+```
+
+Running the development server:
+
+```
 pipenv run python manage.py runserver
 ```
 
 ### Running the tests
 
-```bash
+```
 pipenv run python manage.py test
 ```
 
@@ -33,8 +53,8 @@ Notes:
 - Target should be running Ubuntu 22.04
 - The domain that you are deploying to must be in `ALLOWED_HOSTS`
 
-```bash
-pipenv run python manage.py up bm2.brntn.me --email=<your-email>
+```
+pipenv run python manage.py up <your-domain> --email=<your-email>
 ```
 
 ### Checks
