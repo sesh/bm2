@@ -40,6 +40,12 @@ def dashboard(request):
         tag = request.GET["tag"]
         links = links.filter(tags__slug__iexact=tag)
 
+    if "q" in request.GET:
+        query = request.GET["q"]
+        links = links.filter(
+            Q(url__icontains=query) | Q(title__icontains=query) | Q(tags__slug__iexact=query)
+        ).distinct()
+
     if "limit" in request.GET:
         limit = int(request.GET["limit"])
         limit = min([limit, 100])

@@ -153,6 +153,19 @@ class DashboardTestCase(TestCase):
 
         self.assertTrue(False)
 
+    def test_search(self):
+        self.client.force_login(self.user)
+
+        Link.objects.create(user=self.user, url="https://example.org/", title="example")
+        Link.objects.create(user=self.user, url="https://waxy.org/wordle", title="Fun little game")
+        Link.objects.create(user=self.user, url="https://games.nytimes.com", title="Crosswords & Wordles")
+        link = Link.objects.create(user=self.user, url="https://puzzleanswers.com", title="")
+        link.tags.add("wordle")
+        link.save()
+
+        response = self.client.get("/?q=wordle")
+        self.assertEqual(3, len(response.context["links"]))
+
 
 class AddLinkTestCase(TestCase):
     def setUp(self):
