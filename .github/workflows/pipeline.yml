@@ -1,4 +1,4 @@
-name: Python Checks
+name: Test and check pipeline
 
 on:
   push:
