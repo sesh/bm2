@@ -40,8 +40,17 @@ def dashboard(request):
         tag = request.GET["tag"]
         links = links.filter(tags__slug__iexact=tag)
 
+    if "limit" in request.GET:
+        limit = int(request.GET["limit"])
+        limit = min([limit, 100])
+    else:
+        limit = 100
+
+    if "random" in request.GET:
+        links = links.order_by("?")
+
     # pagination
-    paginator = Paginator(links, 100)
+    paginator = Paginator(links, limit)
 
     try:
         page = int(request.GET.get("page", 1))
@@ -58,6 +67,7 @@ def dashboard(request):
         prev_url = build_absolute_uri_with_added_params(request, params={"page": page - 1})
 
     links = current_page.object_list
+
     return render(
         request,
         "links.html",

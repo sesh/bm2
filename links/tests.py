@@ -124,6 +124,35 @@ class DashboardTestCase(TestCase):
         response = self.client.get("/?page=3&domain=example.org")
         self.assertEqual("http://testserver/?page=2&domain=example.org", response.context["prev"])
 
+    def test_limit_restricts_number_of_links(self):
+        self.client.force_login(self.user)
+
+        for x in range(1000):
+            Link.objects.create(user=self.user, url=f"https://example.org/{x}")
+
+        response = self.client.get("/?limit=10")
+        self.assertEqual(10, len(response.context["links"]))
+
+    def test_random_param_shuffles_links(self):
+        self.client.force_login(self.user)
+
+        for x in range(1000):
+            link = Link.objects.create(user=self.user, url=f"https://example.org/{x}")
+
+        response = self.client.get("/")
+        self.assertEqual(link.pk, response.context["links"][0].pk)
+
+        # there's a 1/1000 chance this will fail let's do it 10 times
+        for _ in range(10):
+            response = self.client.get("/?random=1")
+
+            # if the first link isn't the last one created that means
+            # the shuffle has worked: exit the test
+            if link.pk != response.context["links"][0].pk:
+                return
+
+        self.assertTrue(False)
+
 
 class AddLinkTestCase(TestCase):
     def setUp(self):
