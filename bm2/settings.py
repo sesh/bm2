@@ -202,3 +202,23 @@ if SENTRY_DSN and not DEBUG:
 # https://django-taggit.readthedocs.io/en/latest/
 
 TAGGIT_CASE_INSENSITIVE = True
+
+
+# django-debug-toolbar
+
+if DEBUG:
+    ENABLE_DEBUG_TOOLBAR = False
+
+    try:
+        import debug_toolbar  # noqa
+
+        ENABLE_DEBUG_TOOLBAR = True
+        INSTALLED_APPS += [
+            "debug_toolbar",
+        ]
+        MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+        INTERNAL_IPS = [
+            "127.0.0.1",
+        ]
+    except ImportError:
+        print("django-debug-toolbar is disabled because it is not installed")

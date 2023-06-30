@@ -6,6 +6,8 @@ https://github.com/sesh/django-middleware
 
 import logging
 
+from django.conf import settings
+
 logger = logging.getLogger("django")
 
 
@@ -43,6 +45,9 @@ def csp(get_response):
             "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' https://icons.duckduckgo.com;"
             "child-src 'self'; form-action 'self'"
         )
+
+        if settings.DEBUG and settings.ENABLE_DEBUG_TOOLBAR:
+            response.headers["Content-Security-Policy"] += "; connect-src 'self'"
         return response
 
     return middleware

@@ -14,10 +14,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.http import HttpResponse
 from django.urls import include, path
 
-from links.views import add, dashboard, edit, import_feedbin, import_github, settings
+from links.views import (
+    add,
+    dashboard,
+    edit,
+    import_feedbin,
+    import_github,
+    user_settings,
+)
 
 
 def robots(request):
@@ -35,7 +43,7 @@ urlpatterns = [
     path("", dashboard, name="dashboard"),
     path("add/", add, name="add"),
     path("edit/<uuid:pk>/", edit, name="edit-link"),
-    path("settings/", settings, name="user-settings"),
+    path("settings/", user_settings, name="user-settings"),
     # importers
     path("import/github/", import_github, name="github-import"),
     path("import/feedbin/", import_feedbin, name="feedbin-import"),
@@ -45,3 +53,8 @@ urlpatterns = [
     # Django accounts
     path("accounts/", include("django.contrib.auth.urls")),
 ]
+
+if settings.DEBUG and settings.ENABLE_DEBUG_TOOLBAR:
+    urlpatterns += [
+        path("__debug__/", include("debug_toolbar.urls")),
+    ]

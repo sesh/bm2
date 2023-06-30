@@ -66,7 +66,7 @@ def dashboard(request):
     if current_page.has_previous():
         prev_url = build_absolute_uri_with_added_params(request, params={"page": page - 1})
 
-    links = current_page.object_list
+    links = current_page.object_list.prefetch_related("tags")
 
     return render(
         request,
@@ -124,19 +124,19 @@ def edit(request, pk):
 
 
 @login_required
-def settings(request):
-    user_settings, created = UserSettings.objects.get_or_create(user=request.user)
+def user_settings(request):
+    user_settings_obj, created = UserSettings.objects.get_or_create(user=request.user)
     if created:
-        user_settings.save()
+        user_settings_obj.save()
 
     if request.method == "POST":
-        form = UserSettingsForm(request.POST, instance=user_settings)
+        form = UserSettingsForm(request.POST, instance=user_settings_obj)
         if form.is_valid():
             form.save()
             messages.info(request, "Settings saved successfully")
             return redirect("/settings/")
     else:
-        form = UserSettingsForm(instance=user_settings)
+        form = UserSettingsForm(instance=user_settings_obj)
 
     return render(request, "settings.html", {"form": form})
 
