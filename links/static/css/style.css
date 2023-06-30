@@ -84,6 +84,17 @@ ul.all-tags {
     justify-content: space-between;
 }
 
+.grid.vertical-align {
+  align-items: center;
+}
+
+.btn-link {
+  margin: .9375rem 0 0;
+  padding: .3125rem 0;
+  line-height: 1.25;
+  display: inline-block;
+}
+
 /*
 Django Messages formatting
 */

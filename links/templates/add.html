@@ -6,7 +6,14 @@
     <form class="form" method="post">
         {{ form.render }}
         {% csrf_token %}
-        <input class="btn" type="submit" value="Add Bookmark" />
+        <div class="grid vertical-align">
+            <div>
+                <a class="btn-link" href="/">&larr; Back to Dashboard</a>
+            </div>
+            <div>
+                <input class="btn" type="submit" value="Add Bookmark" />
+            </div>
+        </div>
     </form>
 </section>
 {% endblock %}
