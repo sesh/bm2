@@ -22,7 +22,7 @@ def import_stars(user, request=None):
         if created:
             count_added += 1
             link.title = star_json["repo"]["full_name"] or star_json["repo"]["name"]
-            link.note = star_json["repo"]["description"]
+            link.note = star_json["repo"]["description"] or ""
 
             link.tags.add("github-starred", *star_json["repo"].get("topics", []))
             link.added = star_json["starred_at"]
