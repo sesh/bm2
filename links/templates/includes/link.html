@@ -13,7 +13,7 @@
             {% for t in link.tags.all %}
             <li><a class="text-muted" href="/?tag={{ t.slug }}">#{{ t.name }}</a></li>
             {% endfor %}
-            <li>[<a href="{% url 'edit-link' pk=link.pk %}">edit</a>]</li>
+            <li>[<a href="{% url 'edit-link' pk=link.pk %}">edit</a> | <a href="{% url 'delete-link' pk=link.pk %}">delete</a>]</li>
         </ul>
     </div>
 </div>

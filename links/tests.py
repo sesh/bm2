@@ -372,3 +372,21 @@ class WellKnownTestCase(TestCase):
     def test_security(self):
         response = self.client.get("/.well-known/security.txt")
         self.assertTrue("security@brntn.me" in response.content.decode())
+
+
+class DeleteLinkTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(email="tester@example.org")
+        self.client.force_login(self.user)
+
+    def test_deletes_link(self):
+        link = Link.objects.create(url="https://example.org", user=self.user)
+        self.client.post(f"/delete/{link.pk}/")
+        self.assertEqual(0, Link.objects.count())
+
+    def test_delete_link_fails_if_wrong_user(self):
+        link = Link.objects.create(url="https://example.org")  # no user
+        response = self.client.post(f"/delete/{link.pk}/")
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(1, Link.objects.count())

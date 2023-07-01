@@ -130,6 +130,17 @@ def edit(request, pk):
 
 
 @login_required
+def delete(request, pk):
+    link = get_object_or_404(Link, pk=pk, user=request.user)
+
+    if request.method == "POST":
+        link.delete()
+        return redirect("/")
+
+    return render(request, "delete.html", {"link": link})
+
+
+@login_required
 def user_settings(request):
     user_settings_obj, created = UserSettings.objects.get_or_create(user=request.user)
     if created:

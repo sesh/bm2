@@ -21,6 +21,7 @@ from django.urls import include, path
 from links.views import (
     add,
     dashboard,
+    delete,
     edit,
     import_feedbin,
     import_github,
@@ -43,6 +44,7 @@ def security(request):
 urlpatterns = [
     path("", dashboard, name="dashboard"),
     path("add/", add, name="add"),
+    path("delete/<uuid:pk>/", delete, name="delete-link"),
     path("edit/<uuid:pk>/", edit, name="edit-link"),
     path("settings/", user_settings, name="user-settings"),
     # importers

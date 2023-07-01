@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+    <div>
+        <a class="btn-link" href="/">&larr; Back to Dashboard</a>
+    </div>
+
+    <h2>Delete Bookmark</h2>
+
+    <form class="form" method="post">
+        <label>Bookmark:</label>
+        {% include 'includes/link.html' with link=link %}
+        {% csrf_token %}
+        <p>
+            <input class="btn" type="submit" value="Delete Bookmark" />
+        </p>
+    </form>
+</section>
+{% endblock %}
