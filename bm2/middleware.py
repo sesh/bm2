@@ -7,8 +7,34 @@ https://github.com/sesh/django-middleware
 import logging
 
 from django.conf import settings
+from django.contrib.auth import login, logout
+from django.utils import timezone
+
+from authuser.models import ApiKey
 
 logger = logging.getLogger("django")
+
+
+def login_with_api_key(get_response):
+    def middleware(request):
+        authorization_header = request.META.get("HTTP_AUTHORIZATION")
+        api_key = authorization_header.replace("Bearer", "").strip() if authorization_header else None
+
+        if api_key:
+            try:
+                api_key_obj = ApiKey.objects.get(key=api_key, expires__gt=timezone.now())
+            except ApiKey.DoesNotExist:
+                api_key_obj = None
+
+            if api_key_obj:
+                login(request, api_key_obj.user)
+                response = get_response(request)
+                logout(request)
+                return response
+
+        return get_response(request)
+
+    return middleware
 
 
 def set_remote_addr(get_response):

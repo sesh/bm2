@@ -65,6 +65,7 @@ MIDDLEWARE = [
     "bm2.middleware.corp_coop_coep",
     "bm2.middleware.dns_prefetch",
     "bm2.middleware.referrer_policy",
+    "bm2.middleware.login_with_api_key",
 ]
 
 ROOT_URLCONF = "bm2.urls"

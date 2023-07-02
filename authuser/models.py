@@ -1,3 +1,6 @@
+import secrets
+from datetime import timedelta
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.db import models
 from django.utils import timezone
@@ -69,3 +72,18 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.name or self.email.split("@")[0]
+
+
+def generate_api_key():
+    return "bm2_" + secrets.token_urlsafe()
+
+
+def expiry_time():
+    return timezone.now() + timedelta(days=30)
+
+
+class ApiKey(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    key = models.CharField(max_length=200, default=generate_api_key, unique=True)
+    expires = models.DateTimeField(default=expiry_time)
+    created = models.DateTimeField(auto_now_add=True)
