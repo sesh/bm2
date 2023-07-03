@@ -160,6 +160,14 @@ if DEBUG is False:
     }
 
 
+# Cookies
+# https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/#https
+
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
+
 # Django Up
 # https://github.com/sesh/django-up
 
