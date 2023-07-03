@@ -12,7 +12,7 @@ This project exists primarily for two reasons:
 There's are many examples of the former. I was a long-time Pinboard user, and a del.icio.us user before that.
 For the later, this codebase hits a bunch of things I like:
 
-- Uses the steps in my "[Six things I do every time I start a Django project][six-things]" post (automated with my poorly-documented `[djbs][djbs]` script)
+- Uses the steps in my "[Six things I do every time I start a Django project][six-things]" post (automated with my poorly-documented [`djbs`][djbs] script)
 - Runs the "[Open source Python CI pipeline][ci]" in Github Actions
 - Takes a testing approach that relies heavily on [integration tests][integration-tests] ran with the Django test runner
 - The majority of new code is added with [Test Driven Development][tdd] and a [trunk-based][tbd] workflow
