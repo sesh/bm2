@@ -20,6 +20,8 @@ For the later, this codebase hits a bunch of things I like:
 - Deploys with [Django Up][up] onto a VPS
 - Takes a HTML-first approach with no Javascript
 - Gets an A+ on [Security Headers][headers] and the [SSL Labs Report][ssl] (June 2023)
+- Commits are GPG signed and (mostly) use [Conventional Commits][conventional-commits]
+
 
   [six-things]: https://brntn.me/blog/six-things-i-do-every-time-i-start-a-django-project/
   [ci]: https://brntn.me/blog/open-source-python-ci/
@@ -32,6 +34,7 @@ For the later, this codebase hits a bunch of things I like:
   [headers]: https://securityheaders.com/?q=bm2.brntn.me&followRedirects=on
   [ssl]: https://www.ssllabs.com/ssltest/analyze.html?d=bm2.brntn.me&latest
   [djbs]: https://github.com/sesh/djbs
+  [conventional-commits]: https://www.conventionalcommits.org/en/v1.0.0/
 
 
 ## Usage
