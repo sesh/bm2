@@ -16,6 +16,7 @@ black = "*"
 isort = "*"
 coverage = "*"
 django-debug-toolbar = "*"
+ipdb = "*"
 
 [requires]
 python_version = "3.11"

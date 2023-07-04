@@ -1,3 +1,4 @@
+import base64
 import secrets
 from datetime import timedelta
 
@@ -50,6 +51,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(blank=True, default="", unique=True)
     name = models.CharField(max_length=200, blank=True, default="")
 
+    totp_secret = models.CharField(max_length=200, blank=True, default="")
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -72,6 +75,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.name or self.email.split("@")[0]
+
+    def totp_url(self):
+        secret = base64.b32encode(self.totp_secret.encode()).decode()
+        return f"otpauth://totp/{self.email}?secret={secret.rstrip('=')}&issuer=bm2&algorithm=SHA1&digits=6&period=30"
 
 
 def generate_api_key():

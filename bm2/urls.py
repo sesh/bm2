@@ -18,6 +18,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.urls import include, path
 
+from authuser.views import LoginWithTotpView
 from links.views import (
     add,
     dashboard,
@@ -55,6 +56,7 @@ urlpatterns = [
     path("robots.txt", robots),
     path(".well-known/security.txt", security),
     # Django accounts
+    path("accounts/login/", LoginWithTotpView.as_view(), name="login"),
     path("accounts/", include("django.contrib.auth.urls")),
 ]
 

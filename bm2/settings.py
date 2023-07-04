@@ -180,7 +180,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_SCHEME", "https")
 
 AUTH_USER_MODEL = "authuser.User"
 AUTH_USER_ALLOW_SIGNUP = True
-
+LOGIN_REDIRECT_URL = "/"
 
 # Sentry
 # https://sentry.io
