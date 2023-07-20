@@ -9,6 +9,7 @@ pyyaml = "*"
 dj-database-url = "*"
 django-taggit = "*"
 thttp = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 black = "*"
