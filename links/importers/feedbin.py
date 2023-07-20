@@ -32,7 +32,7 @@ def import_stars(user, request=None):
         entries = thttp.request(
             "https://api.feedbin.com/v2/entries.json",
             basic_auth=(settings.feedbin_username, settings.feedbin_password),
-            params={"ids": ",".join([str(x) for x in response.json[:100]])},
+            params={"ids": ",".join([str(x) for x in response.json[-100:]])},
         )
 
         count_added = 0
