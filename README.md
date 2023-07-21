@@ -13,7 +13,7 @@ There's are many examples of the former. I was a long-time Pinboard user, and a 
 For the later, this codebase hits a bunch of things I like:
 
 - Uses the steps in my "[Six things I do every time I start a Django project][six-things]" post (automated with my poorly-documented [`djbs`][djbs] script)
-- Runs the "[Open source Python CI pipeline][ci]" in Github Actions
+- Runs the "[Open source Python CI pipeline][ci]" in Github Actions (and runs most of the locally with [pre-commit][precommit])
 - Takes a testing approach that relies heavily on [integration tests][integration-tests] ran with the Django test runner
 - The majority of new code is added with [Test Driven Development][tdd] and a [trunk-based][tbd] workflow
 - Uses my [django-middleware][middleware] and [django-authuser][authuser] projects
@@ -21,6 +21,7 @@ For the later, this codebase hits a bunch of things I like:
 - Takes a HTML-first approach with no Javascript
 - Gets an A+ on [Security Headers][headers] and the [SSL Labs Report][ssl] (June 2023)
 - Commits are GPG signed and (mostly) use [Conventional Commits][conventional-commits]
+- Logins require TOTP as a second factor (an extension to my authuser model I'm experimenting with)
 
 
   [six-things]: https://brntn.me/blog/six-things-i-do-every-time-i-start-a-django-project/
@@ -35,6 +36,7 @@ For the later, this codebase hits a bunch of things I like:
   [ssl]: https://www.ssllabs.com/ssltest/analyze.html?d=bm2.brntn.me&latest
   [djbs]: https://github.com/sesh/djbs
   [conventional-commits]: https://www.conventionalcommits.org/en/v1.0.0/
+  [precommit]: https://pre-commit.com/
 
 
 ## Usage
