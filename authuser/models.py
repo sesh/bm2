@@ -77,6 +77,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.name or self.email.split("@")[0]
 
     def totp_url(self):
+        if not self.totp_secret:
+            self.totp_secret = secrets.token_urlsafe()
+            self.save()
+
         secret = base64.b32encode(self.totp_secret.encode()).decode()
         return f"otpauth://totp/{self.email}?secret={secret.rstrip('=')}&issuer=bm2&algorithm=SHA1&digits=6&period=30"
 
