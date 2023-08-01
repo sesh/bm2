@@ -45,6 +45,31 @@ class Link(models.Model):
         parts = urlsplit(self.url)
         return parts.netloc
 
+    def as_json(self):
+        return {
+            "id": str(self.id),
+            "url": self.url,
+            "note": self.note,
+            "tags": [t.name for t in self.tags.all()],
+            "added": self.added.isoformat(),
+            "updated": self.updated.isoformat(),
+            "screeshots": [s.as_json() for s in self.linkscreenshot_set.all()],
+        }
+
+
+class LinkScreenshot(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    link = models.ForeignKey("Link", on_delete=models.CASCADE)
+    url = models.URLField(max_length=2000)
+    added = models.DateTimeField(auto_now_add=True)
+
+    def as_json(self):
+        return {
+            "id": str(self.id),
+            "url": self.url,
+            "added": self.added.isoformat(),
+        }
+
 
 class UserSettings(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

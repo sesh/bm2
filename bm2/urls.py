@@ -21,6 +21,7 @@ from django.urls import include, path
 from authuser.views import LoginWithTotpView
 from links.views import (
     add,
+    api_link,
     dashboard,
     delete,
     edit,
@@ -48,6 +49,8 @@ urlpatterns = [
     path("delete/<uuid:pk>/", delete, name="delete-link"),
     path("edit/<uuid:pk>/", edit, name="edit-link"),
     path("settings/", user_settings, name="user-settings"),
+    # "api"
+    path("api/<uuid:pk>/", api_link, name="api-link"),
     # importers
     path("import/github/", import_github, name="github-import"),
     path("import/feedbin/", import_feedbin, name="feedbin-import"),

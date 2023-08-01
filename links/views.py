@@ -1,14 +1,18 @@
+import json
 from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
 
 from links.forms import LinkForm, UserSettingsForm
 from links.importers import MissingCredentialException, feedbin, github, hackernews
-from links.models import Link, UserSettings
+from links.models import Link, LinkScreenshot, UserSettings
+from links.ssrf import uri_is_safe
 
 
 def build_absolute_uri_with_added_params(request, *, params={}):
@@ -73,6 +77,14 @@ def dashboard(request):
         prev_url = build_absolute_uri_with_added_params(request, params={"page": page - 1})
 
     links = current_page.object_list.prefetch_related("tags")
+
+    if "json" in request.GET:
+        data = {
+            "data": [link.as_json() for link in links],
+            "next": next_url,
+            "prev": prev_url,
+        }
+        return JsonResponse(data)
 
     return render(
         request,
@@ -201,3 +213,35 @@ def import_hackernews(request):
             messages.info(request, f"Imported {count} favourites from Hacker News")
 
     return redirect("/")
+
+
+@login_required
+@csrf_exempt
+def api_link(request, pk):
+    link = get_object_or_404(Link, pk=pk, user=request.user)
+
+    if request.method == "POST":
+        try:
+            request_body = json.loads(request.body)
+        except Exception as e:
+            return JsonResponse(
+                {"errors": [{"code": "bad_request", "message": "Failed to parse JSON body", "exception": str(e)}]},
+                status=400,
+            )
+
+        if "screenshot_url" in request_body:
+            url = request_body["screenshot_url"]
+            if uri_is_safe(url):
+                screenshot, created = LinkScreenshot.objects.get_or_create(link=link, url=url)
+
+                if created:
+                    return JsonResponse({"data": link.as_json(), "messages": ["screeshot added"]}, status=201)
+                else:
+                    return JsonResponse({"data": link.as_json(), "messages": ["screeshot already exists"]})
+
+        return JsonResponse(
+            {"errors": [{"code": "bad_request", "message": "Invalid body or unsupported action"}]}, status=400
+        )
+
+    else:
+        return JsonResponse({"data": link.as_json()})
