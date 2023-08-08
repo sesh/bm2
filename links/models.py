@@ -53,7 +53,7 @@ class Link(models.Model):
             "tags": [t.name for t in self.tags.all()],
             "added": self.added.isoformat(),
             "updated": self.updated.isoformat(),
-            "screeshots": [s.as_json() for s in self.linkscreenshot_set.all()],
+            "screenshots": [s.as_json() for s in self.linkscreenshot_set.all()],
         }
 
 
