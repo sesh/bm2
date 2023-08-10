@@ -76,7 +76,7 @@ def dashboard(request):
     if current_page.has_previous():
         prev_url = build_absolute_uri_with_added_params(request, params={"page": page - 1})
 
-    links = current_page.object_list.prefetch_related("tags")
+    links = current_page.object_list.prefetch_related("tags").prefetch_related("linkscreenshot_set")
 
     if "json" in request.GET:
         data = {
@@ -139,6 +139,18 @@ def edit(request, pk):
         form = LinkForm(instance=link)
 
     return render(request, "edit.html", {"form": form})
+
+
+def screenshot(request, pk):
+    # login not required for the screenshots
+    # but don't display the other screenshots for this URL unless the user is authenticated
+    screenshot = get_object_or_404(LinkScreenshot, pk=pk)
+    if request.user == screenshot.link.user:
+        link = screenshot.link
+    else:
+        link = None
+
+    return render(request, "screenshot.html", {"screenshot": screenshot, "link": link})
 
 
 @login_required

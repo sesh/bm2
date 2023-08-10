@@ -14,6 +14,17 @@
             <li><a class="text-muted" href="/?tag={{ t.slug }}">#{{ t.name }}</a></li>
             {% endfor %}
             <li>[<a href="{% url 'edit-link' pk=link.pk %}">edit</a> | <a href="{% url 'delete-link' pk=link.pk %}">delete</a>]</li>
+            {% if link.linkscreenshot_set.count %}
+            ({% spaceless %}
+                {% for screenshot in link.linkscreenshot_set.all %}
+                    {% if forloop.first %}
+                    <a href="{{ screenshot.get_absolute_url }}">screenshot</a>
+                    {% else %}
+                    <a href="{{ screenshot.get_absolute_url }}">, #{{ forloop.counter0 }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% endspaceless %})
+            {% endif %}
         </ul>
     </div>
 </div>

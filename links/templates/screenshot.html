@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+    {% if link %}
+    <p>
+        Screenshot of <a href="{{ screenshot.link.url }}">{{ screenshot.link.url }}</a> taken on {{ screenshot.added|date:"c" }}<br>
+    {% spaceless %}Other screenshots:
+    {% for screenshot in link.linkscreenshot_set.all %}
+        <a href="{{ screenshot.get_absolute_url }}">#{{ forloop.counter0 }}</a> ({{ screenshot.added|date:"Y-m-d" }}){% if not forloop.last %}, {% endif %}
+    {% endfor %}
+    {% endspaceless %}
+    </p>
+    {% endif %}
+    <p>
+        <img src="{{ screenshot.url }}" alt="Screenshot of {{ screenshot.link.url }}" />
+    </p>
+</section>
+{% endblock %}

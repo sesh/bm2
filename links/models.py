@@ -63,6 +63,12 @@ class LinkScreenshot(models.Model):
     url = models.URLField(max_length=2000)
     added = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-added"]
+
+    def get_absolute_url(self):
+        return reverse("screenshot", kwargs={"pk": self.pk})
+
     def as_json(self):
         return {
             "id": str(self.id),

@@ -28,6 +28,7 @@ from links.views import (
     import_feedbin,
     import_github,
     import_hackernews,
+    screenshot,
     user_settings,
 )
 
@@ -49,6 +50,7 @@ urlpatterns = [
     path("delete/<uuid:pk>/", delete, name="delete-link"),
     path("edit/<uuid:pk>/", edit, name="edit-link"),
     path("settings/", user_settings, name="user-settings"),
+    path("screenshot/<uuid:pk>/", screenshot, name="screenshot"),
     # "api"
     path("api/<uuid:pk>/", api_link, name="api-link"),
     # importers
