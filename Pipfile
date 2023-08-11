@@ -10,6 +10,7 @@ dj-database-url = "*"
 django-taggit = "*"
 thttp = "*"
 sentry-sdk = "*"
+certifi = ">=2023.07.22"
 
 [dev-packages]
 black = "*"
