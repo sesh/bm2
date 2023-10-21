@@ -11,6 +11,7 @@ django-taggit = "*"
 thttp = "*"
 sentry-sdk = "*"
 certifi = ">=2023.07.22"
+urllib3 = ">=2.0.7"
 
 [dev-packages]
 black = "*"
