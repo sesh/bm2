@@ -92,7 +92,7 @@ jobs:
 
       - name: Run ruff
         run: |
-          ruff --format=github .
+          ruff --output-format=github .
 
   bandit:
     runs-on: ubuntu-latest
