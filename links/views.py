@@ -235,9 +235,9 @@ def api_link(request, pk):
     if request.method == "POST":
         try:
             request_body = json.loads(request.body)
-        except Exception as e:
+        except Exception:
             return JsonResponse(
-                {"errors": [{"code": "bad_request", "message": "Failed to parse JSON body", "exception": str(e)}]},
+                {"errors": [{"code": "bad_request", "message": "Failed to parse JSON body"}]},
                 status=400,
             )
 
