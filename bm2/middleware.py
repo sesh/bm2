@@ -68,7 +68,8 @@ def csp(get_response):
     def middleware(request):
         response = get_response(request)
         response.headers["Content-Security-Policy"] = (
-            "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' https://icons.duckduckgo.com https://media.brntn.me;"
+            "default-src 'none'; script-src 'self'; style-src 'self'; "
+            "img-src 'self' https://icons.duckduckgo.com https://media.brntn.me; "
             "child-src 'self'; form-action 'self'"
         )
 
