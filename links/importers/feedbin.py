@@ -1,6 +1,6 @@
 import thttp
 
-from links.importers import MissingCredentialException
+from links.importers import ExpiredCredentialException, MissingCredentialException
 from links.models import Link, UserSettings
 
 
@@ -27,6 +27,9 @@ def import_stars(user, request=None):
         "https://api.feedbin.com/v2/starred_entries.json",
         basic_auth=(settings.feedbin_username, settings.feedbin_password),
     )
+
+    if response.status != 200:
+        raise ExpiredCredentialException()
 
     if len(response.json) > 0:
         entries = thttp.request(

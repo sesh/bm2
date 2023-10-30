@@ -10,7 +10,13 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
 from links.forms import LinkForm, UserSettingsForm
-from links.importers import MissingCredentialException, feedbin, github, hackernews
+from links.importers import (
+    ExpiredCredentialException,
+    MissingCredentialException,
+    feedbin,
+    github,
+    hackernews,
+)
 from links.models import Link, LinkScreenshot, UserSettings
 from links.ssrf import uri_is_safe
 
@@ -190,6 +196,9 @@ def import_github(request):
         except (UserSettings.DoesNotExist, MissingCredentialException):
             messages.warning(request, "Please add your Github token in settings")
             return redirect("/")
+        except ExpiredCredentialException:
+            messages.warning(request, "Github token is expired (or Github is having an issue!)")
+            return redirect("/")
 
         if count >= 0:
             messages.info(request, f"Imported {count} stars from Github")
@@ -204,6 +213,9 @@ def import_feedbin(request):
             count = feedbin.import_stars(request.user, request)
         except (UserSettings.DoesNotExist, MissingCredentialException):
             messages.warning(request, "Please add your Feedbin credentials in settings")
+            return redirect("/")
+        except ExpiredCredentialException:
+            messages.warning(request, "Feedbin token is expired (or Feedbin is having an issue!)")
             return redirect("/")
 
         if count >= 0:

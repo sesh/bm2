@@ -1,6 +1,6 @@
 import thttp
 
-from links.importers import MissingCredentialException
+from links.importers import ExpiredCredentialException, MissingCredentialException
 from links.models import Link, UserSettings
 
 
@@ -14,6 +14,9 @@ def import_stars(user, request=None):
     response = thttp.request(
         url, headers={"Authorization": f"token {settings.github_pat}", "Accept": "application/vnd.github.v3.star+json"}
     )
+
+    if response.status != 200:
+        raise ExpiredCredentialException()
 
     count_added = 0
     for star_json in response.json:
