@@ -40,7 +40,9 @@ def import_stars(user, request=None):
 
         count_added = 0
         for feedbin_link in entries.json:
-            link, created = Link.objects.get_or_create(url=feedbin_link["url"], user=request.user)
+            link, created = Link.objects.get_or_create(
+                url=feedbin_link["url"] or "https://example.org", user=request.user
+            )
 
             if created:
                 count_added += 1
