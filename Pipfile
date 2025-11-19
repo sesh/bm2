@@ -4,14 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "<5.0"
-pyyaml = "*"
-dj-database-url = "*"
-django-taggit = "*"
 thttp = "*"
 sentry-sdk = "*"
-certifi = ">=2023.07.22"
-urllib3 = ">=2.0.7"
+django = "<5.3"
+certifi = "==2025.11.12"
+urllib3 = "==2.5.0"
+django-taggit = "==6.1.0"
+dj-database-url = "==3.0.1"
+pyyaml = "==6.0.3"
 
 [dev-packages]
 black = "*"
