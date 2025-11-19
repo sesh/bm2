@@ -14,11 +14,12 @@ dj-database-url = "==3.0.1"
 pyyaml = "==6.0.3"
 
 [dev-packages]
-black = "*"
 isort = "*"
 coverage = "*"
 django-debug-toolbar = "*"
 ipdb = "*"
+black = "*"
+bandit = "*"
 
 [requires]
 python_version = "3.11"
