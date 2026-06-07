@@ -1,4 +1,0 @@
----
-
-- name: Install OpenSMTPd
-  apt: name=opensmtpd state=latest

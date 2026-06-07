@@ -1,3 +1,21 @@
+[project]
+name = "bm2"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=6.0,<6.1",
+    "dj-database-url>=3.0.1",
+    "django-taggit>=6.1.0",
+    "gunicorn",
+    "psycopg",
+    "sentry-sdk",
+    "thttp",
+    "whitenoise",
+    "certifi",
+    "urllib3",
+    "pyyaml",
+]
+
 [tool.ruff]
 line-length = 120
 

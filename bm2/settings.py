@@ -28,9 +28,11 @@ if not SECRET_KEY:
     raise Exception("DJANGO_SECRET_KEY environment variable must be set")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["bm2.brntn.me", "localhost"]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "bm2.brntn.me,127.0.0.1,localhost").split(",")
+
+CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if h not in ("localhost", "127.0.0.1")]
 
 
 # Application definition
@@ -43,13 +45,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "authuser",
     "django.contrib.admin",
-    "up",
     "links",
     "taggit",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -127,8 +129,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
-if not DEBUG:
-    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 
 # Default primary key field type
@@ -144,16 +150,15 @@ if DEBUG is False:
         "version": 1,
         "disable_existing_loggers": False,
         "handlers": {
-            "file": {
+            "console": {
                 "level": "DEBUG",
-                "class": "logging.FileHandler",
-                "filename": "/srv/www/bm2/logs/debug.log",
+                "class": "logging.StreamHandler",
             },
         },
         "loggers": {
             "django": {
-                "handlers": ["file"],
-                "level": "DEBUG",
+                "handlers": ["console"],
+                "level": "INFO",
                 "propagate": True,
             },
         },
@@ -168,12 +173,7 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
 
 
-# Django Up
-# https://github.com/sesh/django-up
-
-UP_GUNICORN_PORT = 15276
-UP_PYTHON_VERSION = "python3.11"
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_SCHEME", "https")
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Custom user model
